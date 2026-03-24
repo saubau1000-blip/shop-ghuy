@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHOP HUY VIP FINAL</title>
+
+<style>
+    body { margin:0; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#0f0f0f; color:white; padding-bottom: 100px; }
+    header { background:linear-gradient(45deg,#ff0000,#660000); padding:20px; text-align:center; font-size:28px; font-weight: bold; text-shadow: 2px 2px 5px black; }
+    
+    .container { display:flex; flex-wrap:wrap; justify-content:center; padding:10px; max-width: 1200px; margin: 0 auto; }
+    
+    .product { background:#1c1c1c; margin:10px; padding:20px; width:220px; border-radius:12px; box-shadow:0 0 10px rgba(255,0,0,0.5); transition: transform 0.2s; text-align: center; }
+    .product:hover { transform: scale(1.05); box-shadow:0 0 15px rgba(255,0,0,0.8); }
+    .product h3 { color: #ff4d4d; margin-top: 0; }
+    .product b { display:block; margin: 10px 0; font-size: 18px; color: gold; }
+    
+    button { border:none; padding:10px; margin-top:5px; border-radius:8px; width:100%; cursor:pointer; font-weight: bold; transition: 0.2s; }
+    button:hover { opacity: 0.8; transform: translateY(-2px); }
+    .btn-buy { background:#e60000; color:white; }
+    .btn-login { background:#00bfff; color:white; }
+    .btn-reg { background:#28a745; color:white; margin-top: 10px; }
+    .btn-remove { background: #ff3333; color: white; width: auto; padding: 2px 8px; border-radius: 4px; float: right; font-size: 12px; }
+    
+    #cart { position:fixed; right:15px; top:80px; background:rgba(0,0,0,0.9); padding:15px; border-radius:10px; width:250px; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 100; max-height: 60vh; overflow-y: auto; }
+    #authBox { position:fixed; left:15px; bottom:15px; background:rgba(17,17,17,0.95); padding:20px; border-radius:12px; width:240px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.7); z-index: 100; }
+    
+    input { width: calc(100% - 22px); padding:10px; margin:5px auto 10px auto; display: block; border-radius:8px; border:1px solid #444; background:#222; color:white; font-size: 14px; }
+    input:focus { outline: none; border-color: #00bfff; }
+    
+    .support-form { background:#1c1c1c; margin: 20px auto; padding:20px; width: 90%; max-width: 500px; border-radius:12px; box-shadow:0 0 10px rgba(0,191,255,0.3); border: 1px solid #333; }
+    .hidden { display: none; }
+</style>
+</head>
+
+<body>
+<header>🔥 SHOP HUY VIP 🔥</header>
+
+<button onclick="adminLogin()" style="position:fixed;top:15px;left:15px;background:gold;color:black;width:auto;padding:8px 15px;border-radius:8px; z-index: 101; box-shadow: 0 2px 5px black;">👑 Admin</button>
+
+<div style="text-align:center;padding:15px;background:#111; border-bottom: 1px solid #333;">
+    <h3 style="margin-top:0; color:gold;">👑 Thông tin Admin</h3>
+    <p style="margin:5px 0;">Zalo: <b>0947114761</b> | Discord: <b>xetangcuaem</b></p>
+</div>
+
+<div id="authBox">
+    <div id="loginSection">
+        <h4 style="margin-top:0; text-align:center; color:#00bfff;">👤 ĐĂNG NHẬP</h4>
+        <input id="loginUser" type="text" placeholder="Tài khoản">
+        <input id="loginPass" type="password" placeholder="Mật khẩu">
+        <button class="btn-login" onclick="login()">ĐĂNG NHẬP</button>
+        <p style="text-align:center; font-size: 12px; margin: 10px 0 5px 0;">Chưa có tài khoản?</p>
+        <button class="btn-reg" style="background: #555;" onclick="toggleAuth(false)">Tạo tài khoản mới</button>
+    </div>
+
+    <div id="regSection" class="hidden">
+        <h4 style="margin-top:0; text-align:center; color:#28a745;">📝 ĐĂNG KÝ</h4>
+        <input id="regUser" type="text" placeholder="Tên tài khoản mới">
+        <input id="regPass" type="password" placeholder="Mật khẩu">
+        <input id="regPassConfirm" type="password" placeholder="Nhập lại mật khẩu">
+        <button class="btn-reg" onclick="register()">XÁC NHẬN ĐĂNG KÝ</button>
+        <button style="background:none; color:#aaa; font-size:12px; margin-top:10px;" onclick="toggleAuth(true)">Quay lại Đăng nhập</button>
+    </div>
+    
+    <p id="authStatus" style="text-align:center; margin-bottom:0; font-size:13px; margin-top:10px;"></p>
+</div>
+
+<div class="support-form">
+    <h3 style="margin-top:0; color:#00bfff; text-align:center;">📩 Hỗ Trợ Khách Hàng</h3>
+    <input type="text" placeholder="Tên của bạn">
+    <input type="text" placeholder="Nội dung cần hỗ trợ...">
+    <button class="btn-login" onclick="alert('✅ Gửi yêu cầu thành công!')">Gửi Admin</button>
+</div>
+
+<div class="container" id="products"></div>
+
+<div id="cart">
+    <h3 style="margin-top:0; color:#00ff00;">🛒 Giỏ hàng <span id="currentUser" style="font-size: 12px; color: gold;"></span></h3>
+    <div id="cartItems"><i>Chưa có sản phẩm</i></div>
+    <hr style="border-color:#333;">
+    <div style="font-size: 18px; margin-bottom: 10px;">Tổng: <b style="color:gold;"><span id="total">0</span>đ</b></div>
+    <button class="btn-buy" onclick="checkout()">Thanh toán ngay</button>
+</div>
+
+<script>
+let isLogin = false;
+let loggedInUser = "";
+let cart = [];
+let orders = [];
+let stk = "000139577226332";
+
+// Danh sách tài khoản mặc định
+let users = [
+    { u: "member", p: "36" },
+    { u: "huyvip", p: "123" }
+];
+
+let products = [
+    {name:"Tối ưu PC V1",price:30000,desc:"Tối ưu nhẹ, tăng FPS"},
+    {name:"Tối ưu PC V2",price:150000,desc:"Tối ưu sâu, mạnh"},
+    {name:"Silent 1 Day",price:30000,desc:"Tool 1 ngày"},
+    {name:"Silent 3 Day",price:90000,desc:"Tool 3 ngày"},
+    {name:"Silent 30 Day",price:350000,desc:"Tool 30 ngày"},
+    {name:"Brutal 1 Day",price:35000,desc:"Tool mạnh"},
+    {name:"Brutal 30 Day",price:450000,desc:"Tool mạnh"},
+    {name:"Tool cày nhiệm vụ",price:50000,desc:"Auto nhiệm vụ"}
+];
+
+function formatPrice(n) { return new Intl.NumberFormat('vi-VN').format(n); }
+
+// Chuyển đổi qua lại giữa Form Đăng nhập và Đăng ký
+function toggleAuth(showLogin) {
+    document.getElementById("loginSection").classList.toggle("hidden", !showLogin);
+    document.getElementById("regSection").classList.toggle("hidden", showLogin);
+    document.getElementById("authStatus").innerText = "";
+}
+
+function register() {
+    let u = document.getElementById("regUser").value.trim();
+    let p = document.getElementById("regPass").value.trim();
+    let pc = document.getElementById("regPassConfirm").value.trim();
+    let status = document.getElementById("authStatus");
+
+    if(u.length < 3 || p.length < 2) {
+        status.innerText = "❌ Tài khoản/Mật khẩu quá ngắn!";
+        status.style.color = "red";
+        return;
+    }
+    if(p !== pc) {
+        status.innerText = "❌ Mật khẩu nhập lại không khớp!";
+        status.style.color = "red";
+        return;
+    }
+    if(users.find(user => user.u === u)) {
+        status.innerText = "❌ Tài khoản này đã tồn tại!";
+        status.style.color = "red";
+        return;
+    }
+
+    users.push({ u: u, p: p });
+    alert("✅ Đăng ký thành công! Giờ bạn có thể đăng nhập.");
+    toggleAuth(true);
+}
+
+function login() {
+    let u = document.getElementById("loginUser").value.trim();
+    let p = document.getElementById("loginPass").value.trim();
+    let status = document.getElementById("authStatus");
+
+    let user = users.find(user => user.u === u && user.p === p);
+
+    if(user) {
+        isLogin = true;
+        loggedInUser = u;
+        document.getElementById("authBox").style.display = "none";
+        document.getElementById("currentUser").innerText = " - " + u;
+        alert("Chào mừng " + u + " đã quay trở lại!");
+    } else {
+        status.innerText = "❌ Sai tài khoản hoặc mật khẩu!";
+        status.style.color = "red";
+    }
+}
+
+function render() {
+    let html = "";
+    products.forEach((p, i) => {
+        html += `<div class='product'>
+        <h3>${p.name}</h3>
+        <p style="font-size:13px; color:#aaa;">${p.desc}</p>
+        <b>${formatPrice(p.price)}đ</b>
+        <button class='btn-buy' onclick='add(${i})'>🛒 Mua ngay</button>
+        </div>`;
+    });
+    document.getElementById("products").innerHTML = html;
+}
+
+function add(i) {
+    if(!isLogin) { alert("⚠️ Vui lòng Đăng nhập hoặc Đăng ký trước!"); return; }
+    cart.push(products[i]);
+    renderCart();
+}
+
+function renderCart() {
+    let html = "";
+    let total = 0;
+    if(cart.length === 0) {
+        document.getElementById("cartItems").innerHTML = "<i>Trống</i>";
+        document.getElementById("total").innerText = "0";
+        return;
+    }
+    cart.forEach((c, i) => {
+        total += c.price;
+        html += `<div style="margin-bottom:5px; font-size:13px;">${c.name} <button class="btn-remove" onclick='removeItem(${i})'>X</button></div>`;
+    });
+    document.getElementById("cartItems").innerHTML = html;
+    document.getElementById("total").innerText = formatPrice(total);
+}
+
+function removeItem(i) { cart.splice(i, 1); renderCart(); }
+
+function checkout() {
+    if(!isLogin || cart.length === 0) return;
+    let total = cart.reduce((s, item) => s + item.price, 0);
+    orders.push({ user: loggedInUser, items: [...cart], total: formatPrice(total) });
+
+    let box = document.createElement("div");
+    box.innerHTML = `
+    <div style='position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999; display:flex; justify-content:center; align-items:center;'>
+        <div style='background:#111; padding:25px; border-radius:15px; text-align:center; border:2px solid red; width:300px;'>
+            <h3 style='color:gold;'>💳 THANH TOÁN</h3>
+            <p>Số tiền: <b style='color:red;'>${formatPrice(total)}đ</b></p>
+            <p>STK: <b>${stk}</b> (MB Bank)</p>
+            <p>Chủ TK: <b>GIA HUY</b></p>
+            <p style='background:#222; padding:10px; color:yellow;'>Nội dung: <b>HUYVIP ${loggedInUser.toUpperCase()}</b></p>
+            <button class='btn-buy' onclick='this.parentElement.parentElement.remove()'>ĐÃ CHUYỂN KHOẢN</button>
+        </div>
+    </div>`;
+    document.body.appendChild(box);
+    cart = []; renderCart();
+}
+
+function adminLogin() {
+    let u = prompt("Admin:");
+    let p = prompt("Pass:");
+    if(u === "admin" && p === "999") viewOrders();
+    else alert("Sai quyền truy cập!");
+}
+
+function viewOrders() {
+    if(orders.length === 0) { alert("Chưa có đơn hàng."); return; }
+    let t = "DANH SÁCH ĐƠN:\n";
+    orders.forEach((o, i) => {
+        t += `\nĐơn ${i+1} - Khách: ${o.user} (${o.total}đ)\n`;
+        o.items.forEach(it => t += "- " + it.name + "\n");
+    });
+    alert(t);
+}
+
+render();
+</script>
+</body>
+</html>
